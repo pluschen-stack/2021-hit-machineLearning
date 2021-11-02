@@ -1,10 +1,12 @@
-from typing import Collection
 import numpy as np
 import random
 import collections
 
+"""
+kmeans方法划分聚类，如果选择聚类数过多而样本难以分出这么多类就会出现错误，因为这里没有考虑丢弃k
+"""
 class KMeans(object):
-    def __init__(self,data,k,delta = 1e-3) -> None:
+    def __init__(self,data,k,delta = 1e-7) -> None:
         """
         data：数据
         k：聚类数
@@ -25,6 +27,7 @@ class KMeans(object):
         """
         训练
         """
+        print('kmeans')
         times = 0
         c = collections.defaultdict(list)
         while True:
@@ -34,8 +37,6 @@ class KMeans(object):
                 c[self.tag[i]].append(self.data[i])
             newClusterCentroids = [np.mean(c[i],axis=0) for i in range(self.k)]
             times += 1
-            print(newClusterCentroids)
-            print(self.clusterCentroids)
             print('迭代次数：',times)
             if self.euclideanDistance(np.array(self.clusterCentroids),np.array(newClusterCentroids)) < self.delta:
                 break
@@ -43,9 +44,9 @@ class KMeans(object):
                 self.clusterCentroids = newClusterCentroids
         return c,self.clusterCentroids
 
-    def InitializeRemoteK(self):
+    def initializeRemoteK(self):
         """
-        从数据集中首先随机选择一个样本点作为初始向量，
+        从数据集中首先随机选择一个样本点作为初始均值向量，
         然后总是选择与当前样本最远的样本点作为下一个均值向量
         """
         self.clusterCentroids = []
