@@ -42,7 +42,7 @@ class KMeans(object):
                 break
             else:
                 self.clusterCentroids = newClusterCentroids
-        return c,self.clusterCentroids
+        return c,self.clusterCentroids,self.tag
 
     def initializeRemoteK(self):
         """

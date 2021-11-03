@@ -27,8 +27,9 @@ class GMM(object):
         """
         total = 0
         for j in range(self.dataSize):
-            total += np.sum([self.alpha[i]*multivariate_normal.pdf(self.data[j],self.mu[i],self.sigma[i]) for i in range(self.k)])
-        return np.log(total)
+            print([multivariate_normal.pdf(self.data[j],self.mu[i],self.sigma[i]) for i in range(self.k)])
+            total += np.log(np.sum([self.alpha[i]*multivariate_normal.pdf(self.data[j],self.mu[i],self.sigma[i]) for i in range(self.k)]))
+        return total
 
     def __eStep(self):
         """
@@ -60,7 +61,8 @@ class GMM(object):
         difference = self.euclideanDistance(np.array(self.mu),self.__lastMu)\
             +self.euclideanDistance(np.array(self.sigma),self.__lastSigma)\
             +self.euclideanDistance(np.array(self.alpha),self.__lastAlpha)
-        if difference > self.delta:
+        print('diff：',difference)
+        if difference > self.delta :
             self.__lastAlpha = np.array(self.alpha) #保存上一次的混合系数
             self.__lastMu = np.array(self.mu) #保存上一次的均值
             self.__lastSigma = np.array(self.sigma) #保存上一次的协方差矩阵
@@ -82,7 +84,10 @@ class GMM(object):
         c = collections.defaultdict(list)
         for j in range(self.dataSize):
             c[np.argmax(self.gamma[j,:])].append(self.data[j])
-        return c,self.mu
+        self.tag = np.zeros(self.dataSize)
+        for j in range(self.dataSize):
+            self.tag[j] = np.argmax(self.gamma[j,:])
+        return c,self.mu,self.tag
     
     def euclideanDistance(self,x,y):
         """

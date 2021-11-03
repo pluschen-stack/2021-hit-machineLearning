@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-def generateData(mean,cov_xy,var,K=4,size=30):
+def generateData(mean,cov_xy,var,size,K=4):
     """
     生成指定的二元正态分布的数据
     mean：均值点
@@ -13,8 +13,9 @@ def generateData(mean,cov_xy,var,K=4,size=30):
     cov = [[var,cov_xy],[cov_xy,var]]
     sampledata = []
     for i in range(len(mean)):
-        sampledata.append(np.random.multivariate_normal(mean[i], cov, size))
-    return np.array(sampledata).reshape(size*K,2)
+        sampledata.append(np.random.multivariate_normal(mean[i], cov, size[i]))
+    totalSize = np.sum(size)
+    return np.array(sampledata).reshape(totalSize ,2)
 
 if __name__ == '__main__':
     mean = [np.array((1,1)),np.array((4,4)),np.array((1,4)),np.array((4,1))]
