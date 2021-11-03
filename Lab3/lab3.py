@@ -21,11 +21,24 @@ def readIrisData(fileName):
 
 def readSeedsData(fileName):
     df = pd.DataFrame(pd.read_csv(fileName,delimiter='\t'))
-    print(df)
     data = df.iloc[:,0:7].to_numpy()
     tag = df.iloc[:,7].to_numpy()
     return data,tag
-   
+
+def readUserModelingData(fileName):
+    df = pd.DataFrame(pd.read_csv(fileName,delimiter='\t'))
+    data = df.iloc[:,0:5].to_numpy()
+    tag = []
+    for i in range(len(df)):
+        if df.iloc[i,5] == 'High':
+            tag.append(0)
+        elif df.iloc[i,5] == 'Low':
+            tag.append(1)
+        elif df.iloc[i,5] == 'very_low':
+            tag.append(2)
+        elif df.iloc[i,5] == 'Middle':
+            tag.append(3)
+    return data,tag
 def accuracy(realLabel,predictLabel,k):
     """
     使用全排列的方式计算聚类准确率
@@ -49,34 +62,46 @@ def myTest(data,tag,k):
     displayCompareResult(data,k,c1,c2,clusterCentroids1,clusterCentroids2,title1 ='Kmeans',title2 = 'GMM')
 
 if __name__ == '__main__':
-    # x = 2
-    # mean = [np.array((-x,-x)),np.array((x,x)),np.array((-x,x)),np.array((x,-x))]
-    # size = [80,80,80,80]
-    # data = generateData(mean,0.6,2,size,len(mean))
-    # tag = [int(i/80) for i in range(sum(size))]
-    # myTest(data,tag,len(mean))
+    # 符合kmeans模型的样本
+    x = 2
+    mean = [np.array((-x,-x)),np.array((x,x)),np.array((-x,x)),np.array((x,-x))]
+    size = [80,80,80,80]
+    data = generateData(mean,0.6,2,size,len(mean))
+    tag = [int(i/80) for i in range(sum(size))]
+    myTest(data,tag,len(mean))
     
-    # mean = [np.array((1,3)),np.array((2,2)),np.array((3,1))]
-    # size = [120,120,120]
-    # data = generateData(mean,0.6,1,size,len(mean))
-    # tag = [int(i/80) for i in range(sum(size))]
-    # myTest(data,tag,3)
+    # 符合gmm模型的样本
+    mean = [np.array((1,3)),np.array((2,2)),np.array((3,1))]
+    size = [120,120,120]
+    data = generateData(mean,0.6,1,size,len(mean))
+    tag = [int(i/80) for i in range(sum(size))]
+    myTest(data,tag,3)
 
-    #鸢尾花数据集聚类
-    irisData,irisTag = readIrisData('iris.csv')
-    model = KMeans(irisData,3)
-    c1,clusterCentroids1,tag1 = model.initializeRemoteK()
-    print('Kmeans acurracy in iris：',accuracy(np.array(irisTag),tag1,3))
-    model = GMM(irisData,3)
-    c2,clusterCentroids2,tag2 = model.train()
-    print('GMM acurracy in iris：',accuracy(np.array(irisTag),tag2,3))
+    # #鸢尾花数据集聚类
+    # irisData,irisTag = readIrisData('iris.csv')
+    # model = KMeans(irisData,3)
+    # c1,clusterCentroids1,tag1 = model.initializeRemoteK()
+    # print('Kmeans acurracy in iris：',accuracy(np.array(irisTag),tag1,3))
+    # model = GMM(irisData,3)
+    # c2,clusterCentroids2,tag2 = model.train()
+    # print('GMM acurracy in iris：',accuracy(np.array(irisTag),tag2,3))
 
     # #种子数据集
     # data,tag = readSeedsData('seeds_dataset.txt')
     # print(data,tag)
     # model = KMeans(data,3)
     # c1,clusterCentroids1,tag1 = model.initializeRemoteK()
-    # print('Kmeans acurracy in iris：',accuracy(np.array(tag),tag1,3))
+    # print('Kmeans acurracy in  seedsData：',accuracy(np.array(tag),tag1,3))
     # model = GMM(data,3)
     # c2,clusterCentroids2,tag2 = model.train()
-    # print('GMM acurracy in iris：',accuracy(np.array(tag),tag2,3))
+    # print('GMM acurracy in seedsData：',accuracy(np.array(tag),tag2,3))
+
+    # #DataUserModelingData
+    # data,tag = readUserModelingData('Data_User_Modeling_Dataset_Hamdi Tolga KAHRAMAN.csv')
+    # print(np.array(data).shape,np.array(tag).shape)
+    # model = KMeans(data,4)
+    # c1,clusterCentroids1,tag1 = model.initializeRemoteK()
+    # print('Kmeans acurracy in usermodelingdata：',accuracy(np.array(tag),tag1,4))
+    # model = GMM(data,4)
+    # c2,clusterCentroids2,tag2 = model.train()
+    # print('GMM acurracy in usermodelingdata：',accuracy(np.array(tag),tag2,4))

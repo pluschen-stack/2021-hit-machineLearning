@@ -27,7 +27,6 @@ class GMM(object):
         """
         total = 0
         for j in range(self.dataSize):
-            print([multivariate_normal.pdf(self.data[j],self.mu[i],self.sigma[i]) for i in range(self.k)])
             total += np.log(np.sum([self.alpha[i]*multivariate_normal.pdf(self.data[j],self.mu[i],self.sigma[i]) for i in range(self.k)]))
         return total
 
